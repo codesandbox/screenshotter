@@ -97,7 +97,7 @@ export async function handler(event: any, context: Context, cb: Callback) {
 
     const browser = await puppeteer.launch(puppeteerConfig);
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 1200 });
+    await page.setViewport({ width: 1200, height: 630 });
     await loadPage(page, `https://${sandboxId}.codesandbox.io/`);
     const screenshot = await page.screenshot();
     const res = await uploadScreenshot(screenshot, sandboxId);
