@@ -1,5 +1,5 @@
 /* tslint:disable variable-name */
-import { Context } from "aws-lambda";
+import { Callback, Context } from "aws-lambda";
 import * as AWS from "aws-sdk";
 import * as path from "path";
 import * as puppeteer from "puppeteer";
@@ -17,7 +17,7 @@ const s3Config = {
 };
 const puppeteerConfig = {
   headless: true,
-  executablePath: path.join(__dirname, "bin", "headless_shell.compiled"),
+  executablePath: path.join(__dirname, "..", "bin", "headless_shell.compiled"),
   args: ["--no-sandbox", "--single-process"],
 };
 
@@ -83,7 +83,13 @@ function uploadScreenshot(screenshot: Buffer, sandboxId: string) {
   return S3.upload(uploadParams).promise();
 }
 
-export async function handler(event: any, context: Context) {
+export async function handler(event: any, context: Context, cb: Callback) {
+  /** Immediate response for WarmUP plugin */
+  if (event.source === "serverless-plugin-warmup") {
+    console.log("WarmUP - Lambda is warm!");
+    return cb(undefined, "Lambda is warm!");
+  }
+
   try {
     const sandboxId = event.sandboxId;
 
@@ -95,9 +101,9 @@ export async function handler(event: any, context: Context) {
     const res = await uploadScreenshot(screenshot, sandboxId);
     await browser.close();
 
-    context.done(undefined, res.Location);
+    cb(undefined, res.Location);
   } catch (e) {
-    context.done(e);
+    cb(e);
   }
 }
 

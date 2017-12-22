@@ -18,13 +18,8 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "s3:*"
-        - "s3:DeleteObject"
+        - "s3:PutObject"
       Resource: "arn:aws:s3:::${self:custom.s3Bucket}/*"
-    - Effect: 'Allow'
-      Action:
-        - 'lambda:InvokeFunction'
-      Resource: "*"
 
   environment:
     IN_LAMBDA: "true"
@@ -44,6 +39,7 @@ package:
     - src/**
   include:
     - dist/**
+    - bin/**
     - ./environment.json
 
 functions:
@@ -52,10 +48,7 @@ functions:
     warmup: prod
     package:
       exclude:
-        - dist/**
         - src/**
-        - manifests/**
-        - packages/**
       include:
         - dist/**
 
