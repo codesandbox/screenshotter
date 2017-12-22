@@ -12,10 +12,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "aws-lambda": "^0.1.2",
     "puppeteer": "^0.13.0",
-    "serverless-offline": "^3.16.0",
-    "serverless-plugin-warmup": "^3.3.0-rc.1",
     "tar": "^4.2.0"
   },
   "devDependencies": {
@@ -34,12 +31,24 @@
     "@types/semver": "^5.4.0",
     "@types/string-hash": "^1.1.1",
     "@types/tar": "^4.0.0",
+    "aws-lambda": "^0.1.2",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "copy-webpack-plugin": "^4.3.1",
     "eslint-config-prettier": "^2.9.0",
     "jest": "^21.2.1",
+    "serverless-offline": "^3.16.0",
+    "serverless-plugin-warmup": "^3.3.0-rc.1",
+    "serverless-webpack": "^4.2.0",
     "ts-jest": "^21.0.1",
+    "ts-loader": "^3.2.0",
     "tslint": "^5.7.0",
     "tslint-config-prettier": "^1.5.0",
-    "typescript": "^2.6.2"
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0",
+    "webpack-node-externals": "^1.6.0",
+    "webpack-permissions-plugin": "^0.0.2"
   },
   "jest": {
     "transform": {

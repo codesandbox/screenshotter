@@ -18,7 +18,7 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "s3:PutObject"
+        - "s3:*"
       Resource: "arn:aws:s3:::${self:custom.s3Bucket}/*"
 
   environment:
@@ -27,30 +27,17 @@ provider:
     BUCKET_NAME: ${self:custom.s3Bucket}
 
 plugins:
+  - serverless-webpack
   - serverless-plugin-warmup
   - serverless-offline
 
-# needs more granular excluding in production as only the serverless provider npm
-# package should be excluded (and not the whole node_modules directory)
-package:
-  exclude:
-    - .gitignore
-    - .git/**
-    - src/**
-  include:
-    - dist/**
-    - bin/**
-    - ./environment.json
-
 functions:
   imager:
-    handler: dist/index.handler
+    handler: src/index.handler
     warmup: prod
     package:
-      exclude:
-        - src/**
       include:
-        - dist/**
+        - src/bin/**
 
   # NOTE: the following uses an "event" event (pubSub event in this case).
   # Please create the corresponding resources in the Google Cloud

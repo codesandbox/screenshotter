@@ -1,6 +1,7 @@
 /* tslint:disable variable-name */
 import { Callback, Context } from "aws-lambda";
 import * as AWS from "aws-sdk";
+import * as fs from "fs";
 import * as path from "path";
 import * as puppeteer from "puppeteer";
 
@@ -15,9 +16,10 @@ const s3Config = {
   region: "eu-west-1",
   bucket,
 };
+
 const puppeteerConfig = {
   headless: true,
-  executablePath: path.join(__dirname, "..", "bin", "headless_shell.compiled"),
+  executablePath: path.resolve("./src", "bin", "headless_shell.compiled"),
   args: ["--no-sandbox", "--single-process"],
 };
 
@@ -101,7 +103,7 @@ export async function handler(event: any, context: Context, cb: Callback) {
     const res = await uploadScreenshot(screenshot, sandboxId);
     await browser.close();
 
-    cb(undefined, res.Location);
+    cb(undefined, { url: res.Location });
   } catch (e) {
     cb(e);
   }
