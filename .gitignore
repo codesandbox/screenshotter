@@ -10,6 +10,7 @@ packages/**/*
 
 # Serverless directories
 .serverless
+src/bin
 
 environment.json
 config.secret.*
