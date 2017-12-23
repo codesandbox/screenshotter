@@ -25,43 +25,20 @@ const puppeteerConfig = {
 
 const local = "LOCAL" in process.env;
 
-function loadPage(page: puppeteer.Page, url: string) {
+async function loadPage(page: puppeteer.Page, url: string) {
   let resolve: null | (() => void) = null;
-  let requestCount = 0;
-  let timer: NodeJS.Timer | null = null;
 
-  function onPageLoaded() {
-    // console.log('page loaded (hopefully)');
+  const p = new Promise(r => (resolve = r));
+
+  await page.exposeFunction("__puppeteer__", () => {
     if (resolve) {
       resolve();
-    }
-  }
-
-  page.on("request", msg => {
-    requestCount += 1;
-    // console.log('request:', msg.url, requestCount);
-    if (timer !== null) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  });
-
-  page.on("response", msg => {
-    requestCount -= 1;
-    // console.log('response:', msg.url, requestCount, '/', msg.status, '/', msg.ok);
-    if (requestCount === 0) {
-      timer = setTimeout(onPageLoaded, 5000);
-    }
-    if (requestCount < 0) {
-      requestCount = 0;
     }
   });
 
   page.goto(url);
 
-  return new Promise(r => {
-    resolve = r;
-  });
+  return p;
 }
 
 function uploadScreenshot(screenshot: Buffer, sandboxId: string) {
@@ -99,6 +76,7 @@ export async function handler(event: any, context: Context, cb: Callback) {
     const page = await browser.newPage();
     await page.setViewport({ width: 1200, height: 630 });
     await loadPage(page, `https://${sandboxId}.codesandbox.io/`);
+    await page.waitFor(2000);
     const screenshot = await page.screenshot();
     const res = await uploadScreenshot(screenshot, sandboxId);
     await browser.close();
